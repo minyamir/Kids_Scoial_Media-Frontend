@@ -1,4 +1,3 @@
-I’ve revamped the presentation to make it bold, high-impact, and easy to read. This layout uses larger headers and cleaner spacing to ensure your vision stands out professionally.
 
 🏆 THE FUTURE LEADERS PLATFORM
 Where Screen Time Becomes Growth Time
