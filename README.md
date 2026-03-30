@@ -1,16 +1,22 @@
-# React + Vite
+Project Vision: The "Future Leaders" Social Platform
+A curated social media ecosystem designed exclusively for children, replacing traditional social distractions with constructive, high-value content.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Core Content Pillars
+Patriotism & Nationality: Fostering a sense of belonging, civic duty, and pride in one’s heritage and country.
 
-Currently, two official plugins are available:
+Continuous Learning: Educational challenges, skill-sharing, and knowledge-based posts.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Entrepreneurship: A space for "kidpreneurs" to share business ideas, learn financial literacy, and spark innovation.
 
-## React Compiler
+The "Zero-Tolerance" Safety Guardrails
+To maintain a wholesome and productive environment, the platform strictly prohibits:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Violence & Weapons: No depictions of fighting or firearms.
 
-## Expanding the ESLint configuration
+Adult Content: Strict filters against any sexually explicit material.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Toxic Communication: A total ban on hate speech, rude behavior, and verbal abuse/harassment.
+
+The Value Proposition
+"Turning Screen Time into Growth Time"
+Most social media platforms are designed to capture attention through dopamine loops. Your platform shifts the focus to character building and future-proofing, ensuring that every minute a child spends online contributes to their development as a citizen and a creator.
