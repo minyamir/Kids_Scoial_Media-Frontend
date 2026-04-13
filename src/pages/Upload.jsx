@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload as UploadIcon, X, Sparkles, FileVideo, Type } from 'lucide-react';
 import { uploadVideo } from '../api/video.api';
-
+import banned from './BannedPage';
 const Upload = () => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -10,13 +10,18 @@ const Upload = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setPreview(URL.createObjectURL(selectedFile));
+ const handleFileChange = (e) => {
+  const selectedFile = e.target.files[0];
+  if (selectedFile) {
+    // Limit to 50MB for faster AI processing
+    if (selectedFile.size > 50 * 1024 * 1024) {
+      alert("Lesson is too large! Please keep videos under 50MB.");
+      return;
     }
-  };
+    setFile(selectedFile);
+    setPreview(URL.createObjectURL(selectedFile));
+  }
+};
 
   const handleUpload = async () => {
     if (!file) return;
@@ -29,8 +34,15 @@ try {
   const res = await uploadVideo(formData);
   navigate('/'); 
 } catch (err) {
-  // This will show the message sent from your controller (e.g., "Not educational content")
   const serverMessage = err.response?.data?.msg || "Upload failed";
+  
+  // 🛡️ Specific logic for bans
+  if (err.response?.status === 403) {
+    localStorage.removeItem("token"); // Clear session
+    navigate('/banned'); // Redirect to a dedicated explanation page
+    return;
+  }
+
   alert(serverMessage); 
   console.error("Full Error Info:", err.response?.data);
 } finally {

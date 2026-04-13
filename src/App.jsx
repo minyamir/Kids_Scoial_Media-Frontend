@@ -16,7 +16,7 @@ import ChatRoom from './pages/ChatRoom';
 import LiveRoom from './pages/LiveRoom';
 import LiveFeed from './pages/LiveFeed'; // Import the new page
 import Explore from './pages/Explore';
-
+import BannedPage from './pages/BannedPage';
 function App() {
   return (
     <AuthProvider>
@@ -44,7 +44,7 @@ function App() {
               {/* User Features */}
               <Route path="/profile" element={<Profile />} />
               <Route path="/login-success" element={<LoginSuccess />} />
-
+               <Route path="/banned" element={<BannedPage />} /> {/* Dedicated ban explanation page */}
               <Route path="*" element={<div className="p-10">Page Not Found</div>} />
             </Routes>
           </div>
