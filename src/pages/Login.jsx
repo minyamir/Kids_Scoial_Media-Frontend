@@ -48,7 +48,7 @@ const handleSubmit = async (e) => {
         {/* BRANDING */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-black tracking-tighter italic text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-yellow-400 to-red-500">
-            ETHIO-EXCELLENCE
+            ETHIO-Kids🟢🟡🔴
           </h1>
           <p className="text-gray-400 text-sm mt-2 font-medium tracking-wide">Welcome Back, Scholar!</p>
         </div>
