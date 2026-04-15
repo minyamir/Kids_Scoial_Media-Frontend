@@ -21,11 +21,11 @@ export const NotificationProvider = ({ children }) => {
   };
 
   // Poll for new notifications every 10 seconds
-  useEffect(() => {
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 10000);
-    return () => clearInterval(interval);
-  }, [token]);
+  // useEffect(() => {
+  //   fetchNotifications();
+  //   const interval = setInterval(fetchNotifications, 10000);
+  //   return () => clearInterval(interval);
+  // }, [token]);
 
   return (
     <NotificationContext.Provider value={{ notifications, unreadCount, fetchNotifications }}>

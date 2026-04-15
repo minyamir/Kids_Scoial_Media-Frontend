@@ -2,8 +2,10 @@ import React, { useRef, useState } from 'react';
 import VideoActions from './VideoActions';
 import { X, Send, Award, BookOpen, Volume2, VolumeX } from 'lucide-react'; // Added Volume icons
 import API from '../../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 const VideoPlayer = ({ video }) => {
+  const navigate = useNavigate();
   const videoRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false); // New state for sound
@@ -12,6 +14,8 @@ const VideoPlayer = ({ video }) => {
   const [commentsList, setCommentsList] = useState([]);
 
   const BASE_URL = "http://localhost:5000";
+
+
 
   const togglePlay = () => {
     if (playing) { videoRef.current.pause(); } 
@@ -36,9 +40,17 @@ const VideoPlayer = ({ video }) => {
     }
   };
 
-  const handleSendComment = async (e) => {
+ const handleSendComment = async (e) => {
     if (e) e.stopPropagation();
     if (!commentText.trim()) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.info("Sign in to share your insights! 🎓");
+      navigate('/login');
+      return;
+    }
+
     try {
       const res = await API.post('/interaction/comment', { 
         videoId: video._id, 
@@ -51,6 +63,8 @@ const VideoPlayer = ({ video }) => {
       console.error("Failed to post comment", err);
     }
   };
+
+
 
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden flex items-center justify-center">
