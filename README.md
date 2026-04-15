@@ -1,16 +1,27 @@
-# React + Vite
-minaymir
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🏆 THE FUTURE LEADERS PLATFORM
+Where Screen Time Becomes Growth Time
+🚀 OUR MISSION
+To provide a curated social media ecosystem exclusively for children. We replace mindless scrolling with high-value content designed to build the leaders of tomorrow.
+🏗️ THREE CORE PILLARS
+🇸🇿 1. PATRIOTISM & NATIONALITY
+Fostering a deep sense of belonging, civic duty, and pride in heritage. We teach kids to love their country and understand their role as citizens.
 
-Currently, two official plugins are available:
+📚 2. CONTINUOUS LEARNING
+A hub for educational challenges, skill-sharing, and curiosity. We turn the feed into a digital classroom where knowledge is the currency.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+💼 3. KIDPRENEURSHIP
+A dedicated space for business ideas and financial literacy. We empower children to spark innovation and share their entrepreneurial dreams.
 
-## React Compiler
+🛡️ THE "ZERO-TOLERANCE" SHIELD
+Our platform is a sanctuary. To maintain a wholesome environment, we have a hard ban on the following:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+🚫 NO VIOLENCE: Zero depictions of fighting, guns, or weapons.
 
-## Expanding the ESLint configuration
+🚫 NO ADULT CONTENT: Military-grade filters against sexually explicit material.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+🚫 NO TOXICITY: A total ban on hate speech, rudeness, and harassment.
+
+🚫 NO VULGARITY: High-level moderation of voice and text to ensure respect.
+
+💎 THE VALUE PROPOSITION
+"We shift the focus from dopamine loops to character building. Every minute spent on this platform ensures a child is developing as a citizen, a scholar, and a creator."
