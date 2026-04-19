@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { getProfile } from '../api/auth.api';
+import axios from 'axios';
 
 const LoginSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -12,29 +12,32 @@ const LoginSuccess = () => {
     const token = searchParams.get('token');
     
     if (token) {
-      // 1. Fetch the user profile using the new token to check verification status
-      getProfile(token)
-        .then((res) => {
-          const user = res.data.user;
+      // 1. Manually fetch profile using the token from URL 
+      // We use raw axios here to avoid interceptor issues before the token is saved
+      axios.get("https://kids-social-media-backend.onrender.com/api/auth/profile", {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then((res) => {
+        const user = res.data.user;
 
-          // 🚨 THE GATEKEEPER LOGIC
-          // If the scholar hasn't verified their email yet, send them to OTP
-          if (!user.isVerified) {
-            console.log("Scholar unverified. Redirecting to OTP...");
-            navigate(`/verify-otp?email=${user.email}`);
-          } else {
-            // 2. Scholar is verified. Update context and go home.
-            login(user, token);
-            navigate('/');
-          }
-        })
-        .catch((err) => {
-          console.error("Profile synchronization failed:", err);
-          // Redirect to login with a specific error message
-          navigate('/login?error=sync_failed');
-        });
+        // 2. The Gatekeeper Logic
+        if (!user.isVerified) {
+          console.log("Scholar unverified. Redirecting to OTP...");
+          navigate(`/verify-otp?email=${user.email}`);
+        } else {
+          // 3. Save to LocalStorage and update Context
+          localStorage.setItem('token', token);
+          login(user, token);
+          
+          // 4. Mission Accomplished: Go Home
+          navigate('/');
+        }
+      })
+      .catch((err) => {
+        console.error("Identity synchronization failed:", err);
+        navigate('/login?error=sync_failed');
+      });
     } else {
-      // No token found in URL, return to login
       navigate('/login');
     }
   }, [searchParams, login, navigate]);
