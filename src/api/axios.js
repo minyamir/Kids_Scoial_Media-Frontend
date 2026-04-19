@@ -1,18 +1,17 @@
 import axios from 'axios';
 
-// 🎯 THE ONLY LINE YOU CHANGE FOR PRODUCTION
-// For Local: "http://localhost:5000"
-// For Production: "https://kids-social-media-backend.onrender.com"
-export const BASE_URL = import.meta.env.VITE_APP_URL || "http://localhost:5000";
+export const BASE_URL = "https://kids-social-media-backend.onrender.com";
 
 const API = axios.create({
-  // This adds /api to your requests automatically
   baseURL: `${BASE_URL}/api`, 
 });
 
-// Automatically add the JWT token to every request
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
+  
+  // DEBUG: Check your console in the browser to see if this prints
+  console.log("Interceptor Token:", token ? "Found ✅" : "NOT FOUND ❌");
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
