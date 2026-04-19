@@ -5,7 +5,7 @@ import {
   Settings, Grid, Heart, Lock, Camera, X, 
   Microscope, TowerControl as Castle, Flame, 
   Medal, ShieldCheck, KeyRound, LogOut, Trash2, Play 
-} from 'lucide-center';
+} from 'lucide-react'; // ✅ This is correct
 import BottomNav from '../components/Layout/BottomNav';
 // 1. IMPORT YOUR CENTRALIZED CONFIG
 import API, { BASE_URL } from '../api/axios'; 
