@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Send, ArrowLeft, ChevronLeft, MoreVertical, Video, Image } from 'lucide-react';
+import { Send, ArrowLeft, ChevronLeft,ShieldCheck, 
+  Info, 
+  Clock, MoreVertical, Video, Image } from 'lucide-react';
 // 1. IMPORT YOUR CENTRALIZED CONFIG
 import API, { BASE_URL } from '../api/axios'; 
 import { AuthContext } from '../context/AuthContext';
