@@ -95,26 +95,27 @@ const handleGoLive = async () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSave = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const data = new FormData();
-      data.append('username', editData.username);
-      data.append('bio', editData.bio);
-      if (selectedFile) data.append('avatar', selectedFile);
+const handleSave = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const data = new FormData();
+    data.append('username', editData.username);
+    data.append('bio', editData.bio);
+    if (selectedFile) data.append('avatar', selectedFile);
 
-      const res = await API.put('/auth/update-profile', data, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      setUser(res.data.user);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-      setIsEditing(false);
-      toast.success("Profile Updated! 🇪🇹");
-    } catch (err) {
-      toast.error("Update failed.");
-    }
-  };
+    const res = await API.put('/auth/update-profile', data, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    // 🔥 THE FIX: Update everything so it doesn't revert
+    const updatedUser = res.data.user;
+    setUser(updatedUser); // Update the Global AuthContext state
+    localStorage.setItem('user', JSON.stringify(updatedUser)); // Save to browser storage
+    setIsEditing(false);
+    toast.success("Profile Updated! 🇪🇹");
+  } catch (err) {
+    toast.error("Update failed.");
+  }
+};
 
   const totalLikes = userVideos.reduce((acc, vid) => acc + (vid.likes?.length || 0), 0);
 
@@ -164,7 +165,16 @@ const handleGoLive = async () => {
         <div className="relative group" onClick={() => isEditing && fileInputRef.current.click()}>
           <div className="p-1 rounded-full bg-gradient-to-tr from-green-500 via-yellow-400 to-red-500 shadow-2xl">
             <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-[#050505] bg-gray-900">
-              <img src={previewUrl || (user?.avatarUrl ? `${BASE_URL}${user.avatarUrl}` : `https://ui-avatars.com/api/?name=${user?.username}`)} alt="profile" className="w-full h-full object-cover" />
+              <img 
+  key={user?.avatarUrl} // Adding a key forces the browser to refresh the image when the URL changes
+  src={previewUrl || user?.avatarUrl || `https://ui-avatars.com/api/?name=${user?.username}`} 
+  alt="profile" 
+  className="w-full h-full object-cover" 
+  onError={(e) => {
+    // If Cloudinary fails or link is broken, show initials
+    e.target.src = `https://ui-avatars.com/api/?name=${user?.username}`;
+  }}
+/>
             </div>
           </div>
           {isEditing && <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-full"><Camera size={28} /></div>}
@@ -230,7 +240,7 @@ const handleGoLive = async () => {
                 onClick={() => setActiveVideo(video)} 
                 className="aspect-[3/4] bg-gray-900 overflow-hidden relative group cursor-pointer"
               >
-                <video src={`${BASE_URL}${video.videoUrl}`} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all" muted />
+<video src={video.videoUrl} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all" muted />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                    <Play className="text-white/50" fill="currentColor" size={30} />
                 </div>
@@ -247,7 +257,7 @@ const handleGoLive = async () => {
       {activeVideo && (
         <div className="fixed inset-0 bg-black/95 z-[200] flex flex-col items-center justify-center p-4 backdrop-blur-md" onClick={() => setActiveVideo(null)}>
           <button onClick={() => setActiveVideo(null)} className="absolute top-8 right-8 p-4 bg-white/10 rounded-full z-[210]"><X size={32} /></button>
-          <video src={`${BASE_URL}${activeVideo.videoUrl}`} controls autoPlay className="w-full max-w-4xl max-h-[80vh] rounded-2xl" onClick={(e) => e.stopPropagation()} />
+          <video src={activeVideo.videoUrl} controls autoPlay className="w-full max-w-4xl max-h-[80vh] rounded-2xl" onClick={(e) => e.stopPropagation()} />
         </div>
       )}
 

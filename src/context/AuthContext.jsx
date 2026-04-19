@@ -26,11 +26,15 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, [token]);
 
-  const login = (userData, userToken) => {
-    localStorage.setItem('token', userToken);
-    setToken(userToken);
-    setUser(userData);
-  };
+  
+ const login = (userData, userToken) => {
+  localStorage.setItem('token', userToken);
+  // 💾 Add this line so the avatar is remembered instantly on login
+  localStorage.setItem('user', JSON.stringify(userData)); 
+  
+  setToken(userToken);
+  setUser(userData);
+};
 
   const logout = () => {
     localStorage.removeItem('token');

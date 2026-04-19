@@ -75,7 +75,7 @@ const VideoPlayer = ({ video }) => {
         <div className="relative flex-1 h-full bg-zinc-950 overflow-hidden">
           <video
             ref={videoRef}
-            src={`${BASE_URL}${video.videoUrl}`}
+               src={video.videoUrl}
             className="absolute inset-0 h-full w-full object-cover md:object-contain z-0"
             loop
             onClick={togglePlay}
@@ -113,7 +113,7 @@ const VideoPlayer = ({ video }) => {
             initialLikes={video.likesCount || 0}
             initialIsLiked={video.isLiked}
             initialIsFollowing={video.isFollowing}
-            ownerAvatar={video.userId?.avatarUrl ? `${BASE_URL}${video.userId.avatarUrl}` : null}
+            ownerAvatar={video.userId?.avatarUrl || null}
             onOpenComments={openComments}
           />
         </div>
@@ -140,7 +140,7 @@ const VideoPlayer = ({ video }) => {
                 {commentsList.map((c, i) => (
                   <div key={i} className="flex gap-4">
                     <div className="w-9 h-9 rounded-full bg-zinc-800 shrink-0 overflow-hidden border border-white/10 shadow-lg">
-                      <img src={c.userId?.avatarUrl ? `${BASE_URL}${c.userId.avatarUrl}` : `https://ui-avatars.com/api/?name=${c.userId?.username}`} alt="" />
+                      <img src={c.userId?.avatarUrl || `https://ui-avatars.com/api/?name=${c.userId?.username}`} alt="" />
                     </div>
                     <div className="flex-1 text-sm">
                       <p className="text-[10px] font-black text-yellow-500 mb-1">@{c.userId?.username}</p>
@@ -149,7 +149,6 @@ const VideoPlayer = ({ video }) => {
                   </div>
                 ))}
               </div>
-
               <div className="shrink-0 p-5 bg-[#0a0a0a] border-t border-white/5 pb-10">
                 <div className="flex items-center gap-3 bg-zinc-900/50 border border-white/10 rounded-2xl px-4 py-3">
                   <input 

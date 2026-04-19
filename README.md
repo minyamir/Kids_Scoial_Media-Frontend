@@ -24,4 +24,5 @@ Our platform is a sanctuary. To maintain a wholesome environment, we have a hard
 🚫 NO VULGARITY: High-level moderation of voice and text to ensure respect.
 
 💎 THE VALUE PROPOSITION
+
 "We shift the focus from dopamine loops to character building. Every minute spent on this platform ensures a child is developing as a citizen, a scholar, and a creator."
