@@ -38,7 +38,7 @@ const Login = () => {
   // 2. UPDATED GOOGLE LOGIN LOGIC
   const handleGoogleLogin = () => {
     // Dynamically uses the Master Switch URL
-    window.location.href = `${BASE_URL}/auth/google`;
+    window.location.href = `https://kids-social-media-backend.onrender.com/api/auth/google`;
   };
 
   return (
