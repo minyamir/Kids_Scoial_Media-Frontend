@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API = axios.create({
   // Vite uses import.meta.env.VITE_APP_API_URL instead of process.env
-  baseURL: import.meta.env.VITE_APP_API_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_APP_URL || 'http://localhost:5000/api',
 });
 
 // Automatically add the JWT token to every request
