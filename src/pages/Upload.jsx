@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload as UploadIcon, X, Sparkles, FileVideo, Type } from 'lucide-react';
+import { Upload as UploadIcon, X, Sparkles, Type } from 'lucide-react';
 import { uploadVideo } from '../api/video.api';
-import banned from './BannedPage';
+
 const Upload = () => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -10,42 +10,43 @@ const Upload = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
- const handleFileChange = (e) => {
-  const selectedFile = e.target.files[0];
-  if (selectedFile) {
-    // Limit to 50MB for faster AI processing
-    if (selectedFile.size > 50 * 1024 * 1024) {
-      alert("Lesson is too large! Please keep videos under 50MB.");
-      return;
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      // 50MB Limit is smart for free-tier hosting like Render/Cloudinary
+      if (selectedFile.size > 50 * 1024 * 1024) {
+        alert("Lesson is too large! Please keep videos under 50MB.");
+        return;
+      }
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
     }
-    setFile(selectedFile);
-    setPreview(URL.createObjectURL(selectedFile));
-  }
-};
+  };
 
   const handleUpload = async () => {
     if (!file) return;
     setLoading(true);
+    
     const formData = new FormData();
     formData.append('video', file);
-    formData.append('caption', description); // Using 'caption' to match backend search
-// src/pages/Upload.jsx (inside handleUpload)
-try {
-  const res = await uploadVideo(formData);
-  navigate('/'); 
-} catch (err) {
-  const serverMessage = err.response?.data?.msg || "Upload failed";
-  
-  // 🛡️ Specific logic for bans
-  if (err.response?.status === 403) {
-    localStorage.removeItem("token"); // Clear session
-    navigate('/banned'); // Redirect to a dedicated explanation page
-    return;
-  }
+    formData.append('caption', description); 
 
-  alert(serverMessage); 
-  console.error("Full Error Info:", err.response?.data);
-} finally {
+    try {
+      await uploadVideo(formData);
+      navigate('/'); 
+    } catch (err) {
+      const serverMessage = err.response?.data?.msg || "Upload failed";
+      
+      // 🛡️ BDU Security Logic: Handle account restrictions
+      if (err.response?.status === 403) {
+        localStorage.removeItem("token"); 
+        navigate('/banned'); 
+        return;
+      }
+
+      alert(serverMessage); 
+      console.error("Upload Error:", err.response?.data);
+    } finally {
       setLoading(false);
     }
   };
@@ -61,7 +62,7 @@ try {
           <X size={24} />
         </button>
         <h2 className="text-xs font-black tracking-[0.3em] uppercase text-white/60">Contribute Knowledge</h2>
-        <div className="w-10"></div> {/* Balance */}
+        <div className="w-10"></div>
       </div>
 
       <div className="flex-1 flex flex-col items-center px-6 pb-10">
@@ -83,10 +84,9 @@ try {
             </label>
           </div>
         ) : (
-          /* --- Premium Editor View --- */
+          /* --- Editor View --- */
           <div className="w-full max-w-lg flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             
-            {/* Video Preview Card */}
             <div className="relative aspect-[9/16] bg-black rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl max-h-[450px]">
               <video src={preview} className="w-full h-full object-cover" controls />
               <button 
@@ -97,7 +97,6 @@ try {
               </button>
             </div>
 
-            {/* Input Section */}
             <div className="space-y-6">
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-white/40 mb-2">
@@ -108,18 +107,18 @@ try {
                   placeholder="Explain the context of this knowledge..."
                   className="w-full bg-white/[0.03] border border-white/10 p-5 rounded-[1.5rem] focus:outline-none focus:border-yellow-500/50 transition-all resize-none text-sm leading-relaxed"
                   rows="3"
+                  value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
 
-              {/* Post Button */}
               <button
                 onClick={handleUpload}
                 disabled={loading}
-                className="w-full relative group overflow-hidden"
+                className="w-full relative group overflow-hidden rounded-[1.5rem]"
               >
                 <div className={`absolute inset-0 bg-gradient-to-r from-yellow-500 via-yellow-200 to-yellow-600 transition-all ${loading ? 'opacity-20' : 'opacity-100'}`} />
-                <div className="relative py-5 rounded-[1.5rem] font-black text-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2">
+                <div className="relative py-5 font-black text-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2">
                   {loading ? (
                     <span className="animate-pulse">Archiving...</span>
                   ) : (

@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom'; // 1. IMPORT THIS
+import { useNavigate } from 'react-router-dom'; 
 import { 
   Settings, Grid, Heart, Lock, Camera, X, 
   Microscope, TowerControl as Castle, Flame, 
   Medal, ShieldCheck, KeyRound, LogOut, Trash2, Play 
-} from 'lucide-react';
+} from 'lucide-center';
 import BottomNav from '../components/Layout/BottomNav';
-import API from '../api/axios';
+// 1. IMPORT YOUR CENTRALIZED CONFIG
+import API, { BASE_URL } from '../api/axios'; 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Profile = () => {
   const { user, logout, setUser } = useContext(AuthContext);
-  const navigate = useNavigate(); // 2. INITIALIZE THIS
+  const navigate = useNavigate(); 
   const [userVideos, setUserVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const fileInputRef = useRef(null);
@@ -26,7 +27,7 @@ const Profile = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null);
 
-  const BASE_URL = "http://localhost:5000";
+  // ❌ REMOVED: const BASE_URL = "http://localhost:5000";
 
   useEffect(() => {
     if (user) setEditData({ username: user.username || '', bio: user.bio || '' });
@@ -47,31 +48,29 @@ const Profile = () => {
     }
   };
 
-const handleGoLive = async () => {
-  try {
-    const title = prompt("Enter Lesson Title:", "Live Scholarship Session");
-    if (!title) return; // User cancelled
+  const handleGoLive = async () => {
+    try {
+      const title = prompt("Enter Lesson Title:", "Live Scholarship Session");
+      if (!title) return; 
 
-    const token = localStorage.getItem('token');
-    
-    // We send the title to the backend so it shows up in the Live Stadium (LiveFeed)
-    const res = await API.post('/interaction/live-status', 
-      { isLive: true, liveStreamTitle: title }, 
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+      const token = localStorage.getItem('token');
+      
+      const res = await API.post('/interaction/live-status', 
+        { isLive: true, liveStreamTitle: title }, 
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-    if (res.data) {
-      toast.success("Preparing your Broadcast... 🎥");
-      setTimeout(() => {
-        // We use the logged-in user's ID to create their unique room
-        navigate(`/live/${user._id}`);
-      }, 1000);
+      if (res.data) {
+        toast.success("Preparing your Broadcast... 🎥");
+        setTimeout(() => {
+          navigate(`/live/${user._id}`);
+        }, 1000);
+      }
+    } catch (err) {
+      console.error("Live Error:", err);
+      toast.error("Could not reach the Stadium server.");
     }
-  } catch (err) {
-    console.error("Live Error:", err);
-    toast.error("Could not reach the Stadium server.");
-  }
-};
+  };
 
   const handleDeleteVideo = async (videoId, e) => {
     e.stopPropagation();
@@ -95,27 +94,27 @@ const handleGoLive = async () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-const handleSave = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    const data = new FormData();
-    data.append('username', editData.username);
-    data.append('bio', editData.bio);
-    if (selectedFile) data.append('avatar', selectedFile);
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const data = new FormData();
+      data.append('username', editData.username);
+      data.append('bio', editData.bio);
+      if (selectedFile) data.append('avatar', selectedFile);
 
-    const res = await API.put('/auth/update-profile', data, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    // 🔥 THE FIX: Update everything so it doesn't revert
-    const updatedUser = res.data.user;
-    setUser(updatedUser); // Update the Global AuthContext state
-    localStorage.setItem('user', JSON.stringify(updatedUser)); // Save to browser storage
-    setIsEditing(false);
-    toast.success("Profile Updated! 🇪🇹");
-  } catch (err) {
-    toast.error("Update failed.");
-  }
-};
+      const res = await API.put('/auth/update-profile', data, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      const updatedUser = res.data.user;
+      setUser(updatedUser); 
+      localStorage.setItem('user', JSON.stringify(updatedUser)); 
+      setIsEditing(false);
+      toast.success("Profile Updated! 🇪🇹");
+    } catch (err) {
+      toast.error("Update failed.");
+    }
+  };
 
   const totalLikes = userVideos.reduce((acc, vid) => acc + (vid.likes?.length || 0), 0);
 
@@ -166,15 +165,14 @@ const handleSave = async () => {
           <div className="p-1 rounded-full bg-gradient-to-tr from-green-500 via-yellow-400 to-red-500 shadow-2xl">
             <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-[#050505] bg-gray-900">
               <img 
-  key={user?.avatarUrl} // Adding a key forces the browser to refresh the image when the URL changes
-  src={previewUrl || user?.avatarUrl || `https://ui-avatars.com/api/?name=${user?.username}`} 
-  alt="profile" 
-  className="w-full h-full object-cover" 
-  onError={(e) => {
-    // If Cloudinary fails or link is broken, show initials
-    e.target.src = `https://ui-avatars.com/api/?name=${user?.username}`;
-  }}
-/>
+                key={user?.avatarUrl} 
+                src={previewUrl || user?.avatarUrl || `https://ui-avatars.com/api/?name=${user?.username}`} 
+                alt="profile" 
+                className="w-full h-full object-cover" 
+                onError={(e) => {
+                  e.target.src = `https://ui-avatars.com/api/?name=${user?.username}`;
+                }}
+              />
             </div>
           </div>
           {isEditing && <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-full"><Camera size={28} /></div>}
@@ -188,14 +186,12 @@ const handleSave = async () => {
           <>
             <div className="flex items-center gap-2 mt-4"><h2 className="font-black text-2xl tracking-tight">{user?.username}</h2><Medal size={20} className="text-yellow-500" /></div>
             
-            {/* STATS CARD */}
             <div className="grid grid-cols-3 gap-4 w-full max-w-sm mt-8 p-4 bg-white/5 rounded-[32px] border border-white/10 backdrop-blur-sm">
               <div className="text-center"><p className="text-xl font-black">{userVideos.length}</p><p className="text-[10px] text-gray-500 uppercase tracking-widest">Lessons</p></div>
               <div className="text-center border-x border-white/10"><p className="text-xl font-black">{user?.followers?.length || 0}</p><p className="text-[10px] text-gray-500 uppercase tracking-widest">Students</p></div>
               <div className="text-center"><p className="text-xl font-black text-yellow-500">{totalLikes}</p><p className="text-[10px] text-gray-500 uppercase tracking-widest">Wisdom</p></div>
             </div>
 
-            {/* BUTTON GROUP */}
             <div className="flex flex-col gap-3 mt-8 w-full max-w-sm">
               <button 
                 onClick={() => setIsEditing(true)} 
@@ -240,7 +236,7 @@ const handleSave = async () => {
                 onClick={() => setActiveVideo(video)} 
                 className="aspect-[3/4] bg-gray-900 overflow-hidden relative group cursor-pointer"
               >
-<video src={video.videoUrl} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all" muted />
+                <video src={video.videoUrl} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all" muted />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                    <Play className="text-white/50" fill="currentColor" size={30} />
                 </div>

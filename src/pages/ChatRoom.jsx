@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Send, ShieldCheck, Info, Clock } from 'lucide-react';
-import API from '../api/axios';
+import { ChevronLeft, Send, ShieldCheck, Info, Clock } from 'lucide-center';
+// 1. IMPORT YOUR CENTRALIZED CONFIG
+import API, { BASE_URL } from '../api/axios'; 
 import { AuthContext } from '../context/AuthContext';
 import { io } from 'socket.io-client';
 
 const ChatRoom = () => {
-  const { userId } = useParams(); // ID of the person you are talking to
-  const { user } = useContext(AuthContext); // Your logged-in user data
+  const { userId } = useParams(); 
+  const { user } = useContext(AuthContext); 
   const navigate = useNavigate();
   const scrollRef = useRef();
 
@@ -16,19 +17,16 @@ const ChatRoom = () => {
   const [loading, setLoading] = useState(true);
   const [otherUser, setOtherUser] = useState(null);
 
-  const BASE_URL = "http://localhost:5000";
+  // ❌ DELETE: const BASE_URL = "http://localhost:5000"; (Handled by import)
 
-  // Refs to handle "stale closures" in the socket listener
   const currentPartnerIdRef = useRef(userId);
   const myIdRef = useRef(user?._id);
 
-  // Update refs whenever IDs change
   useEffect(() => {
     currentPartnerIdRef.current = userId;
     myIdRef.current = user?._id;
   }, [userId, user?._id]);
 
-  // 1. Initial Data Fetch (Messages & Partner Profile)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,13 +46,12 @@ const ChatRoom = () => {
     fetchData();
   }, [userId]);
 
- // 2. Real-Time Socket Logic
-  const socketRef = useRef(null); // Add this ref at the top with your other refs
+  const socketRef = useRef(null);
 
   useEffect(() => {
     if (!user?._id) return;
 
-    // Initialize socket and store in Ref
+    // 2. USE THE CENTRALIZED BASE_URL FOR SOCKETS
     socketRef.current = io(BASE_URL, {
       transports: ["polling", "websocket"],
       withCredentials: true,
@@ -64,21 +61,14 @@ const ChatRoom = () => {
 
     const socket = socketRef.current;
 
-    // Join your private room once connected
     socket.on("connect", () => {
-      console.log("✅ ChatRoom Socket Connected:", socket.id);
+      console.log("✅ ChatRoom Connected");
       socket.emit("join_chat", user._id);
     });
 
-    // Listen for incoming messages
     socket.on("receive_message", (incomingMsg) => {
-      console.log("📩 Socket packet received:", incomingMsg);
-
       setMessages((prev) => {
-        // Prevent duplicate if the message already exists in state
         if (prev.some(m => m._id === incomingMsg._id)) return prev;
-
-        // Use Refs to verify if this message belongs in this specific chat window
         const partnerId = String(currentPartnerIdRef.current);
         const meId = String(myIdRef.current);
         const senderId = String(incomingMsg.sender);
@@ -90,7 +80,6 @@ const ChatRoom = () => {
       });
     });
 
-    // Cleanup: Remove listeners and disconnect
     return () => {
       if (socketRef.current) {
         socketRef.current.off("receive_message");
@@ -98,20 +87,17 @@ const ChatRoom = () => {
         socketRef.current = null;
       }
     };
-  }, [user?._id]); // Only restart if the logged-in user changes
+  }, [user?._id]);
 
-  // 3. Auto-scroll to bottom
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 4. Send Message Logic
   const handleSend = async (e) => {
     e.preventDefault();
     const textToSend = newMessage.trim();
     if (!textToSend) return;
-
-    setNewMessage(""); // Optimistic UI: clear input immediately
+    setNewMessage("");
 
     try {
       const res = await API.post('/interaction/message/send', {
@@ -119,7 +105,6 @@ const ChatRoom = () => {
         text: textToSend
       });
 
-      // Update local state (the socket listener duplicate check will handle the rest)
       setMessages((prev) => {
         if (prev.some(m => m._id === res.data._id)) return prev;
         return [...prev, res.data];
@@ -138,7 +123,6 @@ const ChatRoom = () => {
 
   return (
     <div className="h-screen w-full bg-[#050505] flex flex-col text-white">
-      {/* Header */}
       <header className="px-6 py-10 border-b border-white/5 bg-black/40 backdrop-blur-xl flex items-center justify-between z-10 sticky top-0">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-1 hover:bg-white/5 rounded-full transition-colors">
@@ -146,8 +130,13 @@ const ChatRoom = () => {
           </button>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-zinc-800 border border-yellow-500/30 overflow-hidden shadow-2xl">
+              {/* 3. UPDATED AVATAR URL LOGIC */}
               <img 
-                src={otherUser?.avatarUrl ? (otherUser.avatarUrl.startsWith('http') ? otherUser.avatarUrl : `${BASE_URL}${otherUser.avatarUrl}`) : `https://ui-avatars.com/api/?name=${otherUser?.username}`} 
+                src={otherUser?.avatarUrl 
+                  ? (otherUser.avatarUrl.startsWith('http') 
+                    ? otherUser.avatarUrl 
+                    : `${BASE_URL.replace('/api', '')}${otherUser.avatarUrl}`) 
+                  : `https://ui-avatars.com/api/?name=${otherUser?.username}`} 
                 alt="avatar" 
                 className="w-full h-full object-cover"
               />
@@ -166,7 +155,6 @@ const ChatRoom = () => {
         <Info size={20} className="text-gray-600 hover:text-yellow-500 cursor-pointer transition-colors" />
       </header>
 
-      {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
         {messages.map((msg) => {
           const isMe = String(msg.sender) === String(user?._id);
@@ -191,7 +179,6 @@ const ChatRoom = () => {
         <div ref={scrollRef} />
       </div>
 
-      {/* Input Footer */}
       <footer className="p-6 bg-[#0a0a0a] border-t border-white/5 pb-10">
         <form onSubmit={handleSend} className="flex items-center gap-3 bg-zinc-900/50 border border-white/10 rounded-2xl px-4 py-1">
           <input 
