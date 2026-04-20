@@ -8,13 +8,30 @@ import Peer from 'simple-peer/simplepeer.min.js';
 
 // Component to render individual participant video streams
 const VideoComponent = ({ peer }) => {
-  const ref = useRef();
+  const videoRef = useRef();
+
   useEffect(() => {
+    // 1. Listen for the 'stream' event from the other user
     peer.on("stream", (stream) => {
-      if (ref.current) ref.current.srcObject = stream;
+      console.log("Stream received from peer!"); // Check your console for this!
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
     });
+
+    // 2. Some browsers need a backup check if the stream was already there
+    if (peer._remoteStreams && peer._remoteStreams[0]) {
+      videoRef.current.srcObject = peer._remoteStreams[0];
+    }
   }, [peer]);
-  return <video playsInline autoPlay className="w-full h-full object-cover rounded-2xl border border-white/10" ref={ref} />;
+  return<video
+      playsInline
+      autoPlay
+      // Adding 'muted' can help bypass browser blocks on auto-playing video
+      // Remove 'muted' once you confirm the video works
+      className="w-full h-full object-cover rounded-2xl border border-white/10"
+      ref={videoRef}
+    />
 };
 
 const LiveRoom = () => {
