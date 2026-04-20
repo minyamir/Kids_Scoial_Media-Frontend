@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 import { Send, X, Mic, MicOff, Video, VideoOff, Users } from 'lucide-react';
 import API, { BASE_URL } from '../api/axios'; 
 import { AuthContext } from '../context/AuthContext';
-import Peer from 'simple-peer';
+import Peer from 'simple-peer/simplepeer.min.js';
 
 // Component to render individual participant video streams
 const VideoComponent = ({ peer }) => {
