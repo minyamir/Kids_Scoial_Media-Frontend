@@ -21,7 +21,7 @@ Our platform is a sanctuary. To maintain a wholesome environment, we have a hard
 
 🚫 NO TOXICITY: A total ban on hate speech, rudeness, and harassment.
 
-🚫 NO VULGARITY: High-level moderation of voice and text to ensure respect
+🚫 NO VULGARITY: High-level moderation of voice and text to ensure respect.
 
 💎 THE VALUE PROPOSITION
 
