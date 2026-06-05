@@ -1,6 +1,6 @@
 🏆 THE FUTURE LEADERS PLATFORM
 Where Screen Time Becomes Growth Time
-🚀 OUR MISSION
+🚀 OUR MISSIONS 
 To provide a curated social media ecosystem exclusively for children. We replace mindless scrolling with high-value content designed to build the leaders of tomorrow.
 🏗️ THREE CORE PILLARS
 🇸🇿 1. PATRIOTISM & NATIONALITY
